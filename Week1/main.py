@@ -1,6 +1,6 @@
 import etcd3
 
-# Establish connection to etcd server
+# Establishing connection to etcd server
 client = etcd3.client(host='localhost', port=2379)
 
 def list_all_keys():
@@ -20,6 +20,7 @@ def put_key_value(key, value):
     client.put(key, value)
     print(f"Key '{key}' with value '{value}' has been successfully put into etcd.")
 
+#menu driven program for easier access
 def display_menu():
     print("\nMenu:")
     print("1. List all keys")
@@ -51,5 +52,6 @@ def main():
         else:
             print("Invalid choice. Please enter a valid option.")
 
-if _name_ == "_main_":
+# main
+if name == "main":
     main()
