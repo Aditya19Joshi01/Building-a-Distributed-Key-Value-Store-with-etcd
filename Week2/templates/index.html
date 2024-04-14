@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>etcd Operations</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        width: 80%;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      h1 {
+        text-align: center;
+      }
+      h2 {
+        margin-top: 20px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 10px;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      form {
+        margin-top: 10px;
+      }
+      input[type="text"],
+      input[type="submit"] {
+        padding: 8px;
+        width: 200px;
+        margin-bottom: 10px;
+      }
+      input[type="submit"] {
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      input[type="submit"]:hover {
+        background-color: #45a049;
+      }
+      p {
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>etcd Operations</h1>
+      <div>
+        <h2>All Keys:</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Key</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for key in keys %}
+            <tr>
+              <td>{{ key }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <h2>Put Key-Value:</h2>
+        <form action="/put" method="post">
+          Key: <input type="text" name="key" /><br />
+          Value: <input type="text" name="value" /><br />
+          <input type="submit" value="Put" />
+        </form>
+      </div>
+      <div>
+        <h2>Delete Key:</h2>
+        <form action="/delete" method="post">
+          Key: <input type="text" name="key" /><br />
+          <input type="submit" value="Delete" />
+        </form>
+      </div>
+      <div>
+        <h2>Get Value from Key:</h2>
+        <form action="/get_value" method="post">
+          Key: <input type="text" name="key" /><br />
+          <input type="submit" value="Get" />
+        </form>
+        {% if value %}
+        <h2>Value:</h2>
+        <p>{{ value }}</p>
+        {% endif %}
+      </div>
+    </div>
+  </body>
+</html>
