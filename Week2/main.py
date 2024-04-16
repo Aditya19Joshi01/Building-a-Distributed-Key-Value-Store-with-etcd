@@ -1,18 +1,27 @@
 from flask import Flask, render_template, request, redirect, url_for
 import etcd3
 import grpc
+from itertools import zip_longest
 
 app = Flask(_name_)
 
 # Define etcd connection
 client = etcd3.client(host='localhost', port=2379)
 
-def list_all_keys():
-    keys = []
-    for _, metadata in client.get_all():
-        keys.append(metadata.key.decode('utf-8'))
-    return keys
+def list_all_values():
+    values = []
+    for key, _ in client.get_all():
+        values.append(key.decode())
+    return values
     
+def list_all_keys():
+    try:
+        keys = [metadata.key.decode('utf-8') for _, metadata in client.get_all()]
+        return keys
+    except etcd3.exceptions.ConnectionFailedError as e:
+        print(f"Error: {e}")
+        return []
+
 def get_value_for_key(key):
     value, _ = client.get(key)
     if value is not None:
@@ -38,9 +47,18 @@ def delete_key(key):
 
 @app.route('/')
 def index():
-    return render_template('index.html', keys=list_all_keys())
+    try:
+        keys = list_all_keys()
+        key_value_pairs = []
+        for key in keys:
+            value = get_value_for_key(key)
+            key_value_pairs.append({'key': key, 'value': value})
+        return render_template('index.html', key_value_pairs=key_value_pairs)
+    except Exception as e:
+        return f"An error occurred: {str(e)}"
 
-@app.route('/put', methods=['POST'])
+
+@app.route('/put', methods = ['POST'])
 def put():
     key = request.form['key']
     value = request.form['value']
@@ -62,10 +80,14 @@ def get():
 @app.route('/delete', methods=['POST'])
 def delete():
     key = request.form['key']
+    if key not in list_all_keys():
+        return "Error: Key does not exist."
+    
     if delete_key(key):
         return redirect(url_for('index'))
     else:
         return "Error deleting key from etcd."
 
-if _name_ == 'main':
+
+if __name__ == '__main__':
     app.run(debug=True)
