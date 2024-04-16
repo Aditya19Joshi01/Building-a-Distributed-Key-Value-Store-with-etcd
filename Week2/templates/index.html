@@ -61,22 +61,24 @@ index.html:
     <div class="container">
       <h1>etcd Operations</h1>
       <div>
-        <h2>All Keys:</h2>
-        <table>
-          <thead>
+    <h2>All Keys and Values:</h2>
+    <table>
+        <thead>
             <tr>
-              <th>Key</th>
+                <th>Key</th>
+                <th>Value</th>
             </tr>
-          </thead>
-          <tbody>
-            {% for key in keys %}
+        </thead>
+        <tbody>
+            {% for pair in key_value_pairs %}
             <tr>
-              <td>{{ key }}</td>
+                <td>{{ pair['key'] }}</td>
+                <td>{{ pair['value'] }}</td>
             </tr>
             {% endfor %}
-          </tbody>
-        </table>
-      </div>
+        </tbody>
+    </table>
+    </div>
       <div>
         <h2>Put Key-Value:</h2>
         <form action="/put" method="post">
